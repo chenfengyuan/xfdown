@@ -53,7 +53,7 @@ class LWPCookieJar(cookiejar.LWPCookieJar):
         if not os.path.exists(filename):
           f=open(filename,'w')
           f.close()
-        f = open(filename, "r+")
+        f = open(filename, "rw+")
         try:
             if userinfo:
                 f.seek(0)
@@ -159,8 +159,8 @@ class XF:
             try:
                 subprocess.Popen(['xdg-open', self.__verifyimg])
             except:
-                _print("请打开%s查看验证码"%self.__verifyimg)
-            print("请输入验证码：")
+                _print("Open %s to get the verify code"%self.__verifyimg)
+            print("Verify code：")
             vf=raw_input("vf # ").strip()
             verify[1]=vf
             
@@ -178,7 +178,7 @@ class XF:
             self.__getverifycode()
             self.__Login(False,True)
         elif str.find(_('不正确')) != -1:
-            _print('你输入的帐号或者密码不正确，请重新输入。')
+            _print('Account or passwd is not correct')
             self.__Login(True)
         else:
             #print('登录失败')
@@ -224,7 +224,7 @@ class XF:
                 else:
                     self.main()
             elif not res["data"]:
-                print (_('无离线任务!'))
+                print (_('Empty mission list'))
                 self.__addtask()
                 self.main()
             else:
@@ -233,7 +233,7 @@ class XF:
                 self.filemid = []
                 res['data'].sort(key=lambda x: x["file_name"])
                 _print ("\n===================离线任务列表====================")
-                _print ("序号\t大小\t进度\t文件名")
+                _print ("Num\tSize\tProcess\tName")
                 for num in range(len(res['data'])):
                     index=res['data'][num]
                     self.filename.append(index['file_name'].encode("u8"))
@@ -254,8 +254,8 @@ class XF:
                             break
                     size="%.1f%s"%(size,_dw)
                     out="%d\t%s\t%s%%\t%s"%(num+1,size,percent,_(self.filename[num]))
-                    if num % 2==0 and os.name=='posix':
-                        out="\033[47m%s\033[m"%out
+                    # if num % 2==0 and os.name=='posix':
+                    #     out="\033[47m%s\033[m"%out
 
                     _print (out)
                 _print ("=======================END=========================\n")
@@ -275,7 +275,7 @@ class XF:
                 self.filecom[num]=(re.search(r'\"com_cookie":\"(.+?)\"\,\"',str).group(1))
        
     def __chosetask(self):
-        _print ("请选择操作,输入回车(Enter)下载任务\nA添加任务,O在线观看,D删除任务,R刷新离线任务列表")
+        _print ("Please chose an action:type enter for downloading,a for adding a mission,o for viewing online,d for deleting a mission,r for refreshing the list.")
         inputs=raw_input("st # ")
         if inputs.upper()=="A":
             self.__addtask()
@@ -293,8 +293,8 @@ class XF:
             self.main()
 
     def __getdownload(self):
-            _print ("请输入要下载的任务序号,数字之间用空格或其他字符分隔.或者使用-来选择连续任务\n输入A下载所有任务:")
-            _print ("(数字后跟p只打印下载命令而不下载，比如1p2p3)")
+            _print ("Please enter the mission number you want to download.Numbers can be separated by any non-number character.And you can use a dash to select an range of missions.Enter an A to download all missions")
+            _print ("enter a p following a number to print the download url instead of downloading")
             target=raw_input("dl # ").strip()
             if target.upper()=="A":
                 lists=zip(range(1,len(self.filehash)+1) , ['']* len(self.filehash))
@@ -307,7 +307,7 @@ class XF:
             else:
                 lists=self.__RE.findall(target)
             if lists==[]:
-                _print ("选择为空.")
+                _print ("None are selected")
                 self.__chosetask()
                 return
 
@@ -315,7 +315,7 @@ class XF:
             self.__download(lists)
 
     def __deltask(self):
-        _print ("请输入要删除的任务序号,数字之间用空格,逗号或其他非数字字符号分割.\n输入A删除所有任务:")
+        _print ("Please enter the mission number you want to delete.Numbers can be separated by any non-number character.Enter A to delete all missions.")
         target=raw_input("dt # ").strip()
         if target.upper()=="A":
             lists=zip(range(1,len(self.filehash)+1) , ['']* len(self.filehash))
@@ -328,7 +328,7 @@ class XF:
         else:
             lists=self.__RE.findall(target)
         if lists==[]:
-            _print ("选择为空.")
+            _print ("None are selected")
             self.__chosetask()
         urlv = 'http://lixian.qq.com/handler/lixian/del_lixian_task.php'
 
@@ -336,11 +336,11 @@ class XF:
             num=int(i[0])-1
             data={'mids':self.filemid[num]}
             self.__request(urlv,data)
-        _print("任务删除完成")
+        _print("Delete success")
 
                     
     def __addtask(self):
-        _print ("请输入下载地址:")
+        _print ("Please enter a url:")
         url=raw_input()
         filename=self.getfilename_url(url)
         data={"down_link":url,\
@@ -351,10 +351,10 @@ class XF:
         str = self.__request(urlv,data)
 
     def __online(self):
-        _print("输入需要在线观看的任务序号")
+        _print("Please enter the misson number to veiwing online")
         num = int(raw_input())-1
         self.__gethttp([(num+1,'')])
-        _print("正在缓冲，马上开始播放")
+        _print("Please waiting,")
         filename=_(self.filename[num])
         cmd=['wget', '-c', '-O', filename, '--header', 'Cookie:FTN5K=%s'%self.filecom[num], self.filehttp[num]]
 
@@ -364,7 +364,7 @@ class XF:
         try:
           subprocess.Popen(cmd,cwd=_(self._downpath))
         except:
-          _print("%s 没有安装"%self._player)
+          _print("%s is not installed"%self._player)
 
 
     def __download(self,lists):
@@ -390,7 +390,7 @@ class XF:
         for i in cmds:
             os.system("cd %s && %s"%(self._downpath,i))
             try:
-                subprocess.Popen(["notify-send","xfdown: 下载完成!"])
+                subprocess.Popen(["notify-send","xfdown: downloading finish!"])
             except:
                 if os.name=='posix':
                   _print("notify-send error,you should have libnotify-bin installed.")
@@ -449,7 +449,7 @@ try:
         else:
             assert False, "unhandled option"
     if not hasattr(xf,"_downpath"):
-        xf._downpath = os.path.expanduser("~/下载")
+        xf._downpath = os.path.expanduser("~/downloads")
     os.makedirs(xf._downpath) if not os.path.exists(xf._downpath) else None
 
     xf.start()
