@@ -232,7 +232,7 @@ class XF:
                 self.filehash = []
                 self.filemid = []
                 res['data'].sort(key=lambda x: x["file_name"])
-                _print ("\n===================离线任务列表====================")
+                _print ("\n===================Download list====================")
                 _print ("Num\tSize\tProcess\tName")
                 for num in range(len(res['data'])):
                     index=res['data'][num]
