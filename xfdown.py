@@ -372,7 +372,7 @@ class XF:
 
         for i in lists:
             num=int(i[0])-1
-            cmd="aria2c -c -s10 -x10 --header 'Cookie:ptisp=edu; FTN5K=%s' '%s'"%(self.filecom[num],self.filehttp[num])
+            cmd="aria2c --file-allocation=none -c -s10 -x10 --header 'Cookie:ptisp=edu; FTN5K=%s' '%s'"%(self.filecom[num],self.filehttp[num])
             if sys.version_info >= (3,0):
                 pass
             else:
