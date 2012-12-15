@@ -12,7 +12,7 @@ except:
     from http import cookiejar
     raw_input=input
 import random,time
-import json,os,sys,re,hashlib
+import json,os,sys,re,hashlib,urllib2
 import getopt
 
 def _(string):
@@ -342,6 +342,7 @@ class XF:
     def __addtask(self):
         _print ("Please enter a url:")
         url=raw_input()
+        url=urllib2.unquote(url)
         filename=self.getfilename_url(url)
         data={"down_link":url,\
                 "filename":filename,\
